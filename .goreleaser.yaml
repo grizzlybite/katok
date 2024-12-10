@@ -1,0 +1,34 @@
+version: 2
+before:
+  hooks:
+    - make dep
+
+builds:
+  - binary: katok
+    main: ./main.go
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goos:
+      - linux
+      - darwin
+      - windows
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -a -installsuffix cgo
+      - -X github.com/grizzlybite/katok/internal/version.gitTag={{.Tag}}
+      - -X github.com/grizzlybite/katok/internal/version.gitCommit={{.Commit}}
+      - -X github.com/grizzlybite/katok/internal/version.gitBranch={{.Branch}}
+
+archives:
+  - builds: [katok]
+
+nfpms:
+  - vendor: katok
+    homepage: https://github.com/grizzlybite/katok
+    maintainer: grizzlybite
+    description: Command-line admin tool for create and update Kafka topics.
+    license: BSD-3
+    bindir: /usr/bin

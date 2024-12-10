@@ -1,0 +1,15 @@
+kafka_brokers: ["192.168.200.249:9092"]
+topics:
+  - name: "amon_amarth_topic"
+    retention.ms: "86400077"
+    num.partitions: 12
+  - name: "decapitated_topic"
+    retention.ms: 86400078
+    num.partitions: 6
+  - name: "if_flames_topic"
+    retention.ms: 17211130
+  - name: "lamb_of_god_topic"
+    retention.ms: 86400078
+  - name: "insomnium_topic"
+    retention.ms: 86400078
+    num.partitions: 18
