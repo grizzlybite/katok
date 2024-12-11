@@ -40,13 +40,35 @@ Flags:
 ```
 
 ### Demo
-Let's set up a local stand for experiments.
-We will launch Zookeeper, Kafka and Consul. 
+Let's set up a local stand for experiments, launch Kafka, Zookeeper and Consul. 
+
+
 ```shell
 git clone git@github.com:grizzlybite/katok.git
 cd ./example
 docker compose -f docker-compose.yaml up -d 
 ```
+Service Kafka contains setting `KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092` which specify the correct hostname or IP address that clients can use to connect to Kafka.
+
+**Add an entry to your /etc/hosts:**
+```shell
+127.0.0.1  localhost kafka
+```
+
+**Generate Consul ACL token (OPTIONAL):**  
+Get SecretID.
+```shell
+docker exec -ti 74e92c8daf19 consul acl bootstrap
+
+AccessorID:       576199c1-0b61-23b3-9c8a-28ce6a1ae434
+SecretID:         1b2a6076-7c8c-ef3d-9171-87478f7a8f6c
+Description:      Bootstrap Token (Global Management)
+Local:            false
+Create Time:      2024-12-10 21:44:19.216897993 +0000 UTC
+Policies:
+   00000000-0000-0000-0000-000000000001 - global-management
+```
+
 
 #### File provider
 In the root of the repository, there is a topics.yaml default file that contains parameters for the topics that need to be created.
@@ -90,7 +112,19 @@ If we run the program again,we will see that the topics have been updated:
 ```
 #### Consul provider
 To use consul as the configuration source,you need use cli flags or set the environment variables:
-* CONSUL_ENABLED
-* CONSUL_URL
-* CONSUL_TOKEN (optional)
-* CONSUL_CONFIG_PATH
+```shell
+export CONSUL_ENABLED=true
+export CONSUL_URL=http://127.0.0.1:8501
+export CONSUL_CONFIG_PATH=kafka/config
+export CONSUL_TOKEN=1b2a6076-7c8c-ef3d-9171-87478f7a8f6c
+```
+
+```shell
+❯ ./katok
+{"time":"2024-12-11T22:43:49.881437963+03:00","level":"INFO","msg":"Using Consul config provider"}
+{"time":"2024-12-11T22:43:49.931620466+03:00","level":"INFO","msg":"Successfully update parameters for 'amon_amarth_topic' topic."}
+{"time":"2024-12-11T22:43:49.937806081+03:00","level":"INFO","msg":"Successfully update parameters for 'decapitated_topic' topic."}
+{"time":"2024-12-11T22:43:49.94341785+03:00","level":"INFO","msg":"Successfully update parameters for 'if_flames_topic' topic."}
+{"time":"2024-12-11T22:43:49.948963194+03:00","level":"INFO","msg":"Successfully update parameters for 'lamb_of_god_topic' topic."}
+{"time":"2024-12-11T22:43:49.955621615+03:00","level":"INFO","msg":"Successfully update parameters for 'insomnium_topic' topic."}
+```

@@ -1,4 +1,4 @@
-kafka_brokers: ["192.168.200.249:9092"]
+kafka_brokers: ["127.0.0.1:29092"]
 topics:
   - name: "amon_amarth_topic"
     retention.ms: "86400077"
